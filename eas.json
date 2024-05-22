@@ -1,12 +1,15 @@
 {
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+        },
+        "preview": {
+            "distribution": "internal",
+        },
+        "production": {}
     },
-    "preview": {
-      "distribution": "internal"
-    },
-    "production": {}
-  }
+    "submit": {
+        "production": {}
+    }
 }
