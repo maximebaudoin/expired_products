@@ -221,14 +221,6 @@ export function ScanCamera() {
                     {!loaded ? (
                         <>
                             <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
-                            {/* 
-                                <TouchableOpacity
-                                        onPress={() => {setScanned(false);Haptics.selectionAsync();}}
-                                        style={[styles.cardProductScanned_btn, styles.cardProductScanned_btnSecondary]}
-                                    >
-                                    <Text style={styles.cardProductScanned_text}>Annuler</Text>
-                                </TouchableOpacity> 
-                            */}
                         </>
                     ) : (
                         foundProduct ? (
