@@ -11,6 +11,8 @@ import * as Haptics from 'expo-haptics';
 import CryptoJS from 'crypto-js';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { formatISO, startOfDay } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
 export function ScanCamera() {
     const [facing, setFacing] = useState(CameraType.back);
@@ -141,14 +143,17 @@ export function ScanCamera() {
             const token = await Notifications.getExpoPushTokenAsync({
                 projectId: Constants.expoConfig?.extra?.eas.projectId,
             });
-            
 
-            const expirationDateObject = new Date(_productData.date.year, _productData.date.month - 1, _productData.date.day);
+            const expirationDate = new Date(_productData.date.year, _productData.date.month - 1, _productData.date.day);
+            const parisTimeZone = 'Europe/Paris';
+            const parisMidnight = startOfDay(utcToZonedTime(expirationDate, parisTimeZone));
+            const expirationDateISO = formatISO(parisMidnight);
+
             const apiPayload = {
                 product: {
                     name: productData.name,
                     thumbnailUrl: productData.image_front_url,
-                    expirationDate: expirationDateObject.toISOString()
+                    expirationDate: expirationDateISO
                 },
                 user: {
                     pushNotificationToken: token.data

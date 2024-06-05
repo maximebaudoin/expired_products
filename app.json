@@ -1,46 +1,56 @@
 {
-    "expo": {
-        "name": "Perim'Scan",
-        "slug": "perim-scan",
-        "version": "1.2.1",
-        "orientation": "portrait",
-        "icon": "./assets/images/logo.png",
-        "scheme": "perimscan",
-        "userInterfaceStyle": "automatic",
-        "splash": {
-            "image": "./assets/images/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "perimscan.maximebaudoin.fr",
-            "buildNumber": "2"
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/images/logo.png",
-                "backgroundColor": "#FFFFFF"
-            },
-            "package": "perimscan.maximebaudoin.fr"
-        },
-        "plugins": [
-            "expo-router",
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Autoriser $(PRODUCT_NAME) à accéder à la caméra pour scanner les produits"
-                }
-            ]
-        ],
-        "experiments": {
-            "typedRoutes": true
-        },
-        "extra": {
-            "eas": {
-                "projectId": "b657b477-0e08-4207-84b9-dccc8f553173"
-            }
-        },
-        "owner": "maximebaudoin"
+  "expo": {
+    "name": "Perim'Scan",
+    "slug": "perim-scan",
+    "version": "1.2.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.png",
+    "scheme": "perimscan",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "perimscan.maximebaudoin.fr",
+      "buildNumber": "2"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "perimscan.maximebaudoin.fr",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Autoriser $(PRODUCT_NAME) à accéder à la caméra pour scanner les produits"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b657b477-0e08-4207-84b9-dccc8f553173"
+      }
+    },
+    "owner": "maximebaudoin",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b657b477-0e08-4207-84b9-dccc8f553173"
     }
+  }
 }
