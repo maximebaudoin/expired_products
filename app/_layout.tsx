@@ -11,6 +11,7 @@ import "react-native-reanimated";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
+import * as Updates from 'expo-updates';
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Platform } from "react-native";
@@ -78,6 +79,7 @@ export default function RootLayout() {
     const [loaded] = useFonts({
         SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     });
+    const { isUpdatePending } = Updates.useUpdates();
 
     useEffect(() => {
         registerForPushNotificationsAsync();
@@ -88,6 +90,12 @@ export default function RootLayout() {
             SplashScreen.hideAsync();
         }
     }, [loaded]);
+
+    useEffect(() => {
+        if (isUpdatePending) {
+            Updates.reloadAsync();
+        }
+    }, [isUpdatePending]);
 
     if (!loaded) {
         return null;

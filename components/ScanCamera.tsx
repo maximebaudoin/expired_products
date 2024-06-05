@@ -12,7 +12,7 @@ import CryptoJS from 'crypto-js';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { formatISO, startOfDay } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 export function ScanCamera() {
     const [facing, setFacing] = useState(CameraType.back);
@@ -144,9 +144,9 @@ export function ScanCamera() {
                 projectId: Constants.expoConfig?.extra?.eas.projectId,
             });
 
-            const expirationDate = new Date(_productData.date.year, _productData.date.month - 1, _productData.date.day);
+            const expirationDate = new Date(_productData.date.year, _productData.date.month - 1, _productData.date.day);            
             const parisTimeZone = 'Europe/Paris';
-            const parisMidnight = startOfDay(utcToZonedTime(expirationDate, parisTimeZone));
+            const parisMidnight = startOfDay(toZonedTime(expirationDate, parisTimeZone));
             const expirationDateISO = formatISO(parisMidnight);
 
             const apiPayload = {
@@ -161,7 +161,7 @@ export function ScanCamera() {
             }
             const payload = JSON.stringify(apiPayload);
             const secret = process.env.EXPO_PUBLIC_API_SECRET_KEY;
-            const signature = CryptoJS.HmacSHA256(payload, secret).toString(CryptoJS.enc.Hex);
+            const signature = CryptoJS.HmacSHA256(payload, secret as string).toString(CryptoJS.enc.Hex);
 
             await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/product`, {
                 ...apiPayload
