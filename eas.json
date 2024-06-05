@@ -1,0 +1,25 @@
+{
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+            "channel": "development"
+        },
+        "preview": {
+            "distribution": "internal",
+            "channel": "preview"
+        },
+        "production": {
+            "android": {
+                "image": "latest"
+            },
+            "ios": {
+                "image": "latest"
+            },
+            "channel": "production"
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}
