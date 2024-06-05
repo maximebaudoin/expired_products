@@ -8,6 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { Product } from '@/types/Product';
 import * as Haptics from 'expo-haptics';
+import CryptoJS from 'crypto-js';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 export function ScanCamera() {
     const [facing, setFacing] = useState(CameraType.back);
@@ -30,8 +33,8 @@ export function ScanCamera() {
     if (!permission.granted) {
         return (
             <View style={styles.container}>
-                <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-                <Button onPress={requestPermission} title="grant permission" />
+                <Text style={{ textAlign: 'center' }}>Nous avons besoin de l'accès à votre caméra pour scanner vos produits</Text>
+                <Button onPress={requestPermission} title="Autoriser l'accès à la caméra" />
             </View>
         );
     }
@@ -41,7 +44,7 @@ export function ScanCamera() {
         Haptics.selectionAsync();
     }
 
-    const handleScan = ({ data }: BarcodeScanningResult) => {
+    const handleScan = async ({ data }: BarcodeScanningResult) => {
         setScanned(true);
         setLoaded(false);
         setFoundProduct(false);
@@ -52,7 +55,7 @@ export function ScanCamera() {
 
         Haptics.selectionAsync();
 
-        axios.get('https://world.openfoodfacts.org/api/v0/product/' + data)
+        await axios.get('https://world.openfoodfacts.org/api/v0/product/' + data)
             .then((response) => {
                 let product = JSON.parse(response.request.response).product;
 
@@ -134,6 +137,35 @@ export function ScanCamera() {
                 year: selectedYear
             };
             storedProducts.push(_productData);
+
+            const token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants.expoConfig?.extra?.eas.projectId,
+            });
+            
+
+            const expirationDateObject = new Date(_productData.date.year, _productData.date.month - 1, _productData.date.day);
+            const apiPayload = {
+                product: {
+                    name: productData.name,
+                    thumbnailUrl: productData.image_front_url,
+                    expirationDate: expirationDateObject.toISOString()
+                },
+                user: {
+                    pushNotificationToken: token.data
+                }
+            }
+            const payload = JSON.stringify(apiPayload);
+            const secret = process.env.EXPO_PUBLIC_API_SECRET_KEY;
+            const signature = CryptoJS.HmacSHA256(payload, secret).toString(CryptoJS.enc.Hex);
+
+            await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/product`, {
+                ...apiPayload
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-signature': signature
+                }
+            }).catch(e => console.log(e));
 
             await AsyncStorage.setItem('@expiredproducts_products', JSON.stringify(storedProducts));
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -235,7 +267,7 @@ export function ScanCamera() {
                                 </View>
 
                                 <TouchableOpacity
-                                    onPress={() => saveProduct()}
+                                    onPress={saveProduct}
                                     style={[styles.cardProductScanned_btn, styles.cardProductScanned_btnPrimary]}
                                 >
                                     <Text style={[styles.cardProductScanned_text, { fontWeight: 'bold', color: '#fff' }]}>Ajouter</Text>
